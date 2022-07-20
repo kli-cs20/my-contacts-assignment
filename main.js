@@ -25,6 +25,8 @@ function goBtnHandler() {
     displayByName();
   } else if (selection === 'display-country') {
     displayByCountry();
+  } else if (selection === 'display-email') {
+    displayByEmail();
   }
 }
 
@@ -38,22 +40,32 @@ function displayContacts() {
 }
 
 function addContact() {
-  let name = prompt("Enter the contact's name: ");
-  let email = prompt(`Enter ${name}'s email address: `);
-  let phoneNum = prompt(`Enter ${name}'s phone number: `);
-  let country = prompt(`Enter ${name}'s country: `);
-
-  contacts.push(newContact(name, email, phoneNum, country));
-  saveContacts();
-  outputEl.innerHTML = `Contact ${name} has been successfully added.`;
+  let email = prompt(`Enter new contact's email address: `);
+  let i = findByEmail(email);
+  if (i === -1) {
+    let name = prompt("Enter the contact's name: ");
+    let phoneNum = prompt(`Enter ${name}'s phone number: `);
+    let country = prompt(`Enter ${name}'s country: `);
+  
+    contacts.push(newContact(name, email, phoneNum, country));
+    saveContacts();
+    outputEl.innerHTML = `Contact ${name} has been successfully added.`;
+  } else {
+    outputEl.innerHTML = `A contact with this email has already been created.`
+  }
 }
 
 function removeContact() {
-  let index = +prompt("Enter the contact # you would like to remove: ");
-  contacts.splice(index, 1);
+  let email = prompt("Enter the email of the contact you would like to remove: ");
+  let index = findByEmail(email);
 
-  saveContacts();
-  outputEl.innerHTML = `Contact has been successfully removed.`
+  if (index === -1) {
+    outputEl.innerHTML = `Error finding email address in contacts.  Please try again.`
+  } else {
+    contacts.splice(index, 1);
+    saveContacts();
+    outputEl.innerHTML = `Contact has been successfully removed.`
+  }
 }
 
 function displayByName() {
@@ -87,6 +99,19 @@ function displayByCountry() {
   outputEl.innerHTML = outputStr;
 }
 
+function displayByEmail() {
+  let outputStr = "";
+  let email = prompt("Enter an email to search for: ");
+  let index = findByEmail(email);
+
+  if (index === -1) {
+    outputStr = "Error finding email address in contacts.  Please try again."
+  } else {
+    outputStr = getContactHTMLStr(contacts[index])
+  }
+  outputEl.innerHTML = outputStr;
+}
+
 // HELPER FUNCTIONS
 function newContact(name, email, number, country) {
   return {
@@ -114,4 +139,14 @@ function saveContacts() {
 function loadContacts() {
   let contactStr = localStorage.getItem("contacts");
   return JSON.parse(contactStr) ?? [];
+}
+
+function findByEmail(email) {
+  for (let i = 0; i < contacts.length; i++) {
+    let thisEmail = contacts[i].email;
+    if (thisEmail === email) {
+      return i;
+    }
+  }
+  return -1;
 }
