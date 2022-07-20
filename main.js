@@ -49,15 +49,42 @@ function addContact() {
 }
 
 function removeContact() {
-  console.log('Remove Contact');
+  let index = +prompt("Enter the contact # you would like to remove: ");
+  contacts.splice(index, 1);
+
+  saveContacts();
+  outputEl.innerHTML = `Contact has been successfully removed.`
 }
 
 function displayByName() {
-  console.log('Display by Name');
+  let name = prompt("Enter a name to search for: ");
+  let outputStr = "";
+
+  for (let i = 0; i < contacts.length; i++) {
+    let thisContact = contacts[i];
+    let thisName = thisContact.name;
+    if (JSON.stringify(thisName).includes(name)) {
+      outputStr += getContactHTMLStr(thisContact);
+    }
+  }
+
+  outputEl.innerHTML = outputStr;
 }
 
 function displayByCountry() {
-  console.log('Display by Country');
+  let country = prompt("Enter a country to search for: ");
+  let outputStr = "";
+
+  for (let i = 0; i < contacts.length; i++) {
+    let thisContact = contacts[i];
+    let thisCountry = thisContact.country;
+
+    if (thisCountry === country) {
+      outputStr += getContactHTMLStr(thisContact);
+    }
+  }
+
+  outputEl.innerHTML = outputStr;
 }
 
 // HELPER FUNCTIONS
