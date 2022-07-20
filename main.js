@@ -6,7 +6,7 @@ let menuEl = document.getElementById('menu');
 let outputEl = document.getElementById('output');
 
 // Global Variables
-let contacts = loadTasks;
+let contacts = loadContacts();
 
 // Go Btn - Menu Listener
 goBtnEl.addEventListener('click', goBtnHandler);
@@ -44,6 +44,7 @@ function addContact() {
   let country = prompt(`Enter ${name}'s country: `);
 
   contacts.push(newContact(name, email, phoneNum, country));
+  saveContacts();
   outputEl.innerHTML = `Contact ${name} has been successfully added.`;
 }
 
@@ -72,18 +73,18 @@ function newContact(name, email, number, country) {
 function getContactHTMLStr(contact) {
   return `
   <div>
-    ${contact.name}
-    ${contact.email}
-    ${contact.phoneNum} (${contact.country})
+    <h4>${contact.name}</h2>
+    <u>${contact.email}</u>
+    </p>${contact.phoneNum} (${contact.country})</p>
   </div>
   `;
 }
 
-function saveTasks() {
+function saveContacts() {
   localStorage.setItem("contacts", JSON.stringify(contacts));
 }
 
-function loadTasks() {
-  let contactStr = localStorage.getItem("tasks");
+function loadContacts() {
+  let contactStr = localStorage.getItem("contacts");
   return JSON.parse(contactStr) ?? [];
 }
